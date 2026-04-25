@@ -263,6 +263,63 @@
     .img-section { border-bottom: 0.5px solid rgba(0,0,0,0.08); overflow: hidden; }
     .img-full { width: 100%; display: block; height: auto; }
 
+    /* ════ STICKY NOTE MARQUEE (color cards) ════ */
+    .note-marquee {
+      --gap: 18px;
+      --speed: 26s;
+      padding: clamp(18px, 3vw, 34px) 0;
+      background: #fff;
+      overflow: hidden;
+      position: relative;
+      /* subtle edge fade */
+      -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 6%, #000 94%, transparent 100%);
+      mask-image: linear-gradient(90deg, transparent 0%, #000 6%, #000 94%, transparent 100%);
+    }
+    .note-track {
+      display: flex;
+      width: max-content;
+      animation: noteScroll var(--speed) linear infinite;
+      will-change: transform;
+    }
+    .note-track-inner { display: flex; width: max-content; }
+    .note-set {
+      display: flex;
+      gap: var(--gap);
+      padding-right: var(--gap);
+    }
+    @keyframes noteScroll {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* “touch bump” effect: nudges opposite, then returns */
+    .note-marquee { touch-action: pan-y; }
+    .note-marquee.is-bumping .note-track-inner { animation: noteBump 520ms cubic-bezier(.2,.9,.2,1); }
+    @keyframes noteBump {
+      0% { transform: translateX(0); }
+      45% { transform: translateX(26px); }
+      100% { transform: translateX(0); }
+    }
+    .sticky-card {
+      width: min(360px, 78vw);
+      padding: 22px 22px 20px;
+      border-radius: 4px;
+      box-shadow: 0 16px 28px rgba(0,0,0,0.12);
+      color: rgba(0,0,0,0.82);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      flex: 0 0 auto;
+    }
+    .sticky-q { font-size: 18px; line-height: 1.25; font-weight: 600; letter-spacing: -0.2px; margin-bottom: 10px; }
+    .sticky-divider { height: 1px; background: rgba(0,0,0,0.55); margin: 10px 0 12px; }
+    .sticky-a { font-size: 13px; line-height: 1.55; font-weight: 500; color: rgba(0,0,0,0.70); }
+
+    .sticky--pink { background: #f4a9b0; }
+    .sticky--green { background: #b8d7c2; }
+    .sticky--yellow { background: #f2c24f; }
+    .sticky--red { background: #d55b5b; }
+    .sticky--blue { background: #7ba8b9; }
+    .sticky--purple { background: #8f84b5; }
+
     /* ════ CARDS ════ */
     .card {
       border: 0.5px solid rgba(0,0,0,0.1); background: #fff;
@@ -328,22 +385,177 @@
 
     /* ════ CTA ════ */
     .cta-section {
-      padding: 120px 0; text-align: center; background: #000;
+      padding: 132px 0; text-align: center;
+      background:
+        radial-gradient(1100px 640px at 50% 18%, rgba(255,255,255,0.075) 0%, rgba(255,255,255,0.028) 34%, rgba(0,0,0,0) 64%),
+        radial-gradient(820px 520px at 50% 10%, rgba(255,255,255,0.042) 0%, rgba(0,0,0,0) 62%),
+        #000;
       margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw);
       padding-left: 5vw; padding-right: 5vw;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
     }
     .cta-section .shell { text-align: center; }
-    .cta-eyebrow { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.3); margin-bottom: 18px; }
-    .cta-headline { font-size: clamp(38px,6vw,72px); font-weight: 700; color: #fff; line-height: 1.04; letter-spacing: -2px; margin-bottom: 14px; }
-    .cta-headline em { font-style: normal; color: var(--accent); }
-    .cta-sub { font-size: 17px; color: rgba(255,255,255,0.4); margin-bottom: 42px; font-weight: 300; }
-    .cta-form { display: inline-flex; border: 0.5px solid rgba(255,255,255,0.12); border-radius: 999px; overflow: hidden; background: rgba(255,255,255,0.06); max-width: 440px; width: 100%; }
-    .cta-input { flex: 1; background: transparent; border: none; padding: 15px 20px; font-size: 15px; color: #fff; font-family: inherit; outline: none; }
-    .cta-input::placeholder { color: rgba(255,255,255,0.28); }
-    .cta-btn { background: #fff; color: #000; border: none; border-radius: 999px; padding: 15px 24px; font-size: 14px; font-weight: 600; font-family: inherit; cursor: pointer; margin: 4px; transition: opacity 0.2s; }
-    .cta-btn:hover { opacity: 0.88; }
-    .cta-note { margin-top: 16px; font-size: 12px; color: rgba(255,255,255,0.2); }
-    .success-msg { display: none; color: var(--accent); font-size: 16px; margin-top: 18px; }
+    .cta-glass {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: clamp(24px, 3.2vw, 40px);
+      border-radius: 28px;
+      border: 1px solid rgba(255,255,255,0.095);
+      background: rgba(255,255,255,0.050);
+      box-shadow:
+        0 26px 80px rgba(0,0,0,0.58),
+        inset 0 1px 0 rgba(255,255,255,0.06);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-glass::before {
+      content: '';
+      position: absolute;
+      left: 8%;
+      right: 8%;
+      top: 12px;
+      height: 40px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.11), rgba(255,255,255,0));
+      border-radius: 999px;
+      pointer-events: none;
+    }
+    .cta-eyebrow {
+      font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+      color: rgba(255,255,255,0.52);
+      margin-bottom: 14px;
+    }
+    .cta-headline {
+      font-size: clamp(40px,6vw,78px);
+      font-weight: 750;
+      line-height: 1.02;
+      letter-spacing: -2.4px;
+      margin-bottom: 12px;
+      color: rgba(255,255,255,0.96);
+      text-wrap: balance;
+    }
+    .cta-headline .cta-glow {
+      background: linear-gradient(
+        180deg,
+        #ffffff 0%,
+        #f1f1f1 14%,
+        #cfcfcf 32%,
+        #8f8f8f 52%,
+        #ededed 74%,
+        #ffffff 100%
+      );
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      filter: drop-shadow(0 8px 26px rgba(255,255,255,0.045));
+      text-shadow: 0 0 12px rgba(255,255,255,0.06);
+    }
+    .cta-sub {
+      font-size: 17px;
+      color: rgba(255,255,255,0.54);
+      margin: 0 auto 34px;
+      font-weight: 300;
+      max-width: 52ch;
+    }
+    .cta-form {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(255,255,255,0.11);
+      border-radius: 999px;
+      padding: 6px;
+      background: rgba(255,255,255,0.042);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.08),
+        inset 0 -1px 0 rgba(0,0,0,0.32);
+      max-width: 520px;
+      width: 100%;
+      margin: 0 auto;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-form::before {
+      content: '';
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      top: 6px;
+      height: 16px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0));
+      border-radius: 999px;
+      pointer-events: none;
+    }
+    .cta-input {
+      flex: 1;
+      min-width: 0;
+      background: transparent;
+      border: none;
+      padding: 14px 16px;
+      font-size: 15px;
+      color: rgba(255,255,255,0.92);
+      font-family: inherit;
+      outline: none;
+    }
+    .cta-input::placeholder { color: rgba(255,255,255,0.35); }
+    .cta-form:focus-within {
+      border-color: rgba(255,255,255,0.16);
+      box-shadow: 0 0 0 4px rgba(255,255,255,0.05), inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+    .cta-btn {
+      background: linear-gradient(
+        180deg,
+        #ffffff 0%,
+        #f4f4f4 18%,
+        #cfcfcf 46%,
+        #f7f7f7 72%,
+        #ffffff 100%
+      );
+      color: #0b0b0e;
+      border: none;
+      border-radius: 999px;
+      padding: 13px 18px;
+      font-size: 14px;
+      font-weight: 650;
+      font-family: inherit;
+      cursor: pointer;
+      transition: filter 0.18s ease, box-shadow 0.2s ease;
+      white-space: nowrap;
+      box-shadow:
+        0 12px 28px rgba(0,0,0,0.30),
+        inset 0 1px 0 rgba(255,255,255,0.78),
+        inset 0 -10px 16px rgba(0,0,0,0.12);
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-btn::before {
+      content: '';
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      top: 7px;
+      height: 14px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0));
+      opacity: 0.72;
+      pointer-events: none;
+    }
+    .cta-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 999px;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06);
+      pointer-events: none;
+    }
+    .cta-btn:hover { filter: brightness(1.018); }
+    .cta-btn:active { filter: brightness(0.995); }
+    .cta-note { margin-top: 16px; font-size: 12px; color: rgba(255,255,255,0.32); }
+    .success-msg { display: none; color: rgba(255,255,255,0.85); font-size: 16px; margin-top: 18px; }
 
     /* ════ LOGO END ════ */
     .logo-end {
@@ -380,7 +592,7 @@
       .comp-table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
       .section { padding: 60px 0; }
       .section-title { font-size: clamp(24px, 5vw, 36px); margin-bottom: 32px; }
-      .cta-section { padding: 80px 0; }
+      .cta-section { padding: 90px 0; }
     }
     @media (max-width: 560px) {
       nav { width: 96vw; border-radius: 20px; top: 8px; }
@@ -405,12 +617,13 @@
       .section { padding: 48px 0; }
       .section-title { font-size: clamp(22px, 6vw, 30px); margin-bottom: 24px; }
       .faq-q { font-size: 14px; }
-      .cta-section { padding: 60px 0; }
-      .cta-headline { font-size: clamp(28px, 7vw, 42px); }
-      .cta-sub { font-size: 14px; margin-bottom: 28px; }
-      .cta-form { flex-direction: column; border-radius: 18px; }
-      .cta-input { padding: 14px 16px; font-size: 14px; text-align: center; }
-      .cta-btn { margin: 4px; border-radius: 14px; padding: 13px 20px; }
+      .cta-section { padding: 70px 0; }
+      .cta-glass { border-radius: 22px; }
+      .cta-headline { font-size: clamp(30px, 7.8vw, 46px); }
+      .cta-sub { font-size: 14px; margin-bottom: 26px; }
+      .cta-form { flex-direction: column; border-radius: 18px; padding: 8px; gap: 8px; }
+      .cta-input { padding: 14px 14px; font-size: 14px; text-align: center; }
+      .cta-btn { width: 100%; border-radius: 14px; padding: 13px 16px; }
       .logo-end { padding: 60px 0 80px; }
       .logo-end img { width: min(320px, 80vw); }
       footer { flex-direction: column; gap: 12px; text-align: center; padding: 20px 0; }
@@ -493,7 +706,7 @@
 
     <!-- ══ STATS ══ -->
     <div class="stats-bar ghostable">
-      <div class="stat reveal"><div class="stat-val">Rs.299</div><div class="stat-label">Per month. Competitors charge Rs.4,000–25,000.</div></div>
+      <div class="stat reveal"><div class="stat-val" style="font-size: clamp(24px, 3vw, 32px);">Free for early access — limited spots</div><div class="stat-label">No monthly subscription.</div></div>
       <div class="stat reveal"><div class="stat-val">1.5Cr+</div><div class="stat-label">Indians appear for interviews every year.</div></div>
       <div class="stat reveal"><div class="stat-val">Zero</div><div class="stat-label">India-first competitors doing this properly.</div></div>
     </div>
@@ -588,7 +801,7 @@
         <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">How fast are the answers? <span class="faq-icon">+</span></div><div class="faq-a">Typically under 2 seconds from when a question is detected. The overlay appears before they've finished speaking in most cases.</div></div>
         <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">Is my data private? <span class="faq-icon">+</span></div><div class="faq-a">Your meeting transcripts are stored only in your account. We don't train on your data, sell it, or share it.</div></div>
         <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">Which platforms does it work with? <span class="faq-icon">+</span></div><div class="faq-a">Zoom, Google Meet, Microsoft Teams — any app that uses system audio, because we capture at the OS level, not the app level.</div></div>
-        <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">Why is it so cheap compared to Cluely? <span class="faq-icon">+</span></div><div class="faq-a">Cluely is priced for the US market. We're building for India — India pricing, India use cases. Rs.299 is the real price.</div></div>
+        <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">Why is it so cheap compared to Cluely? <span class="faq-icon">+</span></div><div class="faq-a">Cluely is priced for the US market. We're building for India — India pricing, India use cases. Free for early access — limited spots.</div></div>
       </div>
     </section>
 
@@ -598,17 +811,23 @@
   <!-- ══ CTA ══ -->
   <section class="cta-section ghostable" id="signup">
     <div class="shell">
-      <div class="cta-eyebrow reveal">Early access</div>
-      <h2 class="cta-headline reveal">Get in before<br>everyone <em>else does.</em></h2>
-      <p class="cta-sub reveal">Rs.149/month for the first 100 people. No card required.</p>
-      <div class="reveal" id="cta-form-wrap">
-        <div class="cta-form">
-          <input class="cta-input" id="s-email" type="email" placeholder="your@email.com" />
-          <button class="cta-btn" onclick="doSignup()">Join the list</button>
+      <div class="cta-glass reveal">
+        <div class="cta-eyebrow">Early access</div>
+        <h2 class="cta-headline">
+          Get in before<br><span class="cta-glow">everyone else does.</span>
+        </h2>
+        <p class="cta-sub">Free for early access — limited spots</p>
+
+        <div id="cta-form-wrap">
+          <div class="cta-form">
+            <input class="cta-input" id="s-email" type="email" placeholder="your@email.com" />
+            <button class="cta-btn" onclick="doSignup()">Join the list</button>
+          </div>
+          <div class="cta-note">No spam. No card needed.</div>
         </div>
-        <div class="cta-note">No spam. No card needed.</div>
+
+        <div class="success-msg" id="s-success">✓ You're on the list. We'll reach out soon.</div>
       </div>
-      <div class="success-msg" id="s-success">✓ You're on the list. We'll reach out soon.</div>
     </div>
   </section>
 
@@ -690,6 +909,107 @@
       entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
     }, {threshold: 0.08});
     document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+    // ── Replace colorful-cards image with animated marquee ──
+    (function initStickyNoteMarquee() {
+      const sections = Array.from(document.querySelectorAll('.img-section'));
+      if (!sections.length) return;
+      const target = sections[sections.length - 1];
+      const img = target.querySelector('img.img-full');
+      if (!img) return;
+
+      target.innerHTML = `
+        <div class="note-marquee reveal" aria-label="Stealth AI note cards scrolling left">
+          <div class="note-track" aria-hidden="true">
+            <div class="note-track-inner">
+            <div class="note-set">
+              <article class="sticky-card sticky--pink">
+                <div class="sticky-q">What if you always knew what to say?</div>
+                <div class="sticky-divider"></div>
+                <div class="sticky-a">You do. Stealth AI thinks ahead and shows you the perfect answer in real time.</div>
+              </article>
+              <article class="sticky-card sticky--green">
+                <div class="sticky-q">Why let meetings forget what matters?</div>
+                <div class="sticky-divider"></div>
+                <div class="sticky-a">They don’t. Stealth AI remembers every word, decision, and number — forever.</div>
+              </article>
+              <article class="sticky-card sticky--yellow">
+                <div class="sticky-q">Why start from zero every time?</div>
+                <div class="sticky-divider"></div>
+                <div class="sticky-a">You don’t have to. Your AI remembers everything from every past conversation.</div>
+              </article>
+              <article class="sticky-card sticky--red">
+                <div class="sticky-q">What if your company had a perfect memory?</div>
+                <div class="sticky-divider"></div>
+                <div class="sticky-a">Now it does. Every meeting feeds one brain. Anyone can ask. Instantly.</div>
+              </article>
+              <article class="sticky-card sticky--blue">
+                <div class="sticky-q">Why use tools that only record?</div>
+                <div class="sticky-divider"></div>
+                <div class="sticky-a">Recording is not intelligence. Stealth AI listens, understands, and answers.</div>
+              </article>
+              <article class="sticky-card sticky--purple">
+                <div class="sticky-q">Why should AI be visible at all?</div>
+                <div class="sticky-divider"></div>
+                <div class="sticky-a">It shouldn’t be. The best technology disappears and just works.</div>
+              </article>
+            </div>
+
+            <!-- duplicate set for seamless loop -->
+            <div class="note-set">
+              <article class="sticky-card sticky--pink">
+                <div class="sticky-q">What if you always knew what to say?</div>
+                <div class="sticky-divider"></div>
+                <div class="sticky-a">You do. Stealth AI thinks ahead and shows you the perfect answer in real time.</div>
+              </article>
+              <article class="sticky-card sticky--green">
+                <div class="sticky-q">Why let meetings forget what matters?</div>
+                <div class="sticky-divider"></div>
+                <div class="sticky-a">They don’t. Stealth AI remembers every word, decision, and number — forever.</div>
+              </article>
+              <article class="sticky-card sticky--yellow">
+                <div class="sticky-q">Why start from zero every time?</div>
+                <div class="sticky-divider"></div>
+                <div class="sticky-a">You don’t have to. Your AI remembers everything from every past conversation.</div>
+              </article>
+              <article class="sticky-card sticky--red">
+                <div class="sticky-q">What if your company had a perfect memory?</div>
+                <div class="sticky-divider"></div>
+                <div class="sticky-a">Now it does. Every meeting feeds one brain. Anyone can ask. Instantly.</div>
+              </article>
+              <article class="sticky-card sticky--blue">
+                <div class="sticky-q">Why use tools that only record?</div>
+                <div class="sticky-divider"></div>
+                <div class="sticky-a">Recording is not intelligence. Stealth AI listens, understands, and answers.</div>
+              </article>
+              <article class="sticky-card sticky--purple">
+                <div class="sticky-q">Why should AI be visible at all?</div>
+                <div class="sticky-divider"></div>
+                <div class="sticky-a">It shouldn’t be. The best technology disappears and just works.</div>
+              </article>
+            </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      // ensure the new marquee also reveals
+      target.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+      const marquee = target.querySelector('.note-marquee');
+      if (marquee) {
+        const bump = () => {
+          marquee.classList.remove('is-bumping');
+          // force reflow so consecutive bumps replay
+          void marquee.offsetWidth;
+          marquee.classList.add('is-bumping');
+          window.clearTimeout(marquee.__bumpT);
+          marquee.__bumpT = window.setTimeout(() => marquee.classList.remove('is-bumping'), 560);
+        };
+        marquee.addEventListener('pointerdown', bump, { passive: true });
+        marquee.addEventListener('mouseenter', bump, { passive: true });
+      }
+    })();
 
     // ── FAQ ──
     function toggleFaq(item) {
