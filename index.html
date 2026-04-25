@@ -958,13 +958,27 @@
     });
 
     // ── Signup ──
-    function doSignup() {
+    async function doSignup() {
       const email = document.getElementById('s-email');
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) {
         email.style.outline = '1px solid #ff5f57'; return;
       }
-      document.getElementById('cta-form-wrap').style.display = 'none';
-      document.getElementById('s-success').style.display = 'block';
+      email.style.outline = '';
+      try {
+        const res = await fetch('https://formspree.io/f/mbdqboyl', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({ email: email.value.trim() })
+        });
+        if (!res.ok) throw new Error('Submission failed');
+        document.getElementById('cta-form-wrap').style.display = 'none';
+        document.getElementById('s-success').style.display = 'block';
+      } catch (err) {
+        alert('Could not submit right now. Please try again.');
+      }
     }
 
     // ── Tilt cards ──
