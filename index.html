@@ -276,8 +276,7 @@
     /* image break */
     .img-section { border-bottom: 0.5px solid rgba(0,0,0,0.08); overflow: hidden; }
     .img-full { width: 100%; display: block; height: auto; }
-    /* Replace the built-in base64 monitor image with a file-based asset */
-    #monitor-image img:nth-of-type(2) { display: none; }
+    
 
     /* ════ STICKY NOTE MARQUEE (color cards) ════ */
     .note-marquee {
@@ -926,6 +925,12 @@
       entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
     }, {threshold: 0.08});
     document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+    // Some embedded images are JPEG data but mislabeled as PNG (data:image/png;base64,/9j/...).
+    // Mobile browsers can refuse to render them, so normalize the MIME type.
+    document.querySelectorAll('img[src^="data:image/png;base64,/9j/"]').forEach(img => {
+      img.src = img.src.replace(/^data:image\/png;base64,/, 'data:image/jpeg;base64,');
+    });
 
     // ── Replace colorful-cards image with animated marquee ──
     (function initStickyNoteMarquee() {
