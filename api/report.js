@@ -1,10 +1,20 @@
 export default async function handler(req, res) {
+  // CORS Headers
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  // Handle preflight check
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed. Use POST.' });
   }
 
   try {
-    const { id, timestamp, category, description, screenshot, systemInfo } = req.body;
+    const { id, timestamp, category, description, screenshot, systemInfo, userEmail } = req.body;
 
     if (!category || !description) {
       return res.status(400).json({ error: 'Missing category or description.' });
@@ -24,6 +34,7 @@ export default async function handler(req, res) {
       timestamp: timestamp || new Date().toISOString(),
       fields: [
         { name: 'Report ID', value: `\`${id || 'N/A'}\``, inline: true },
+        { name: 'User Email', value: userEmail || 'Guest', inline: true }, // Added User Email
         { name: 'OS Platform', value: systemInfo?.platform || 'Unknown', inline: true },
         { name: 'App Version', value: systemInfo?.appVersion || '1.0.0', inline: true }
       ],
@@ -63,3 +74,4 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Internal Server Error', message: error.message });
   }
 }
+
